@@ -39,7 +39,7 @@ typedef struct tagBITMAPFILEHEADER {
 }HEADERFILE;
 typedef struct {
     DWORD        Size;
-    DWORD         Width;
+    DWORD        Width;
     DWORD        Height;
     WORD         Planes;
     WORD         BitCount;
