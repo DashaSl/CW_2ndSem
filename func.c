@@ -199,7 +199,6 @@ void draw_hexagon(char* file_name, int* data, int mode, int width, RGB line_colo
     draw_thick_line(bmp, line_color, x3, y1, x2, y1, width, 0);
     draw_thick_line(bmp, line_color, x2, y1, x1, y2, width, 1); //c[3] b[3] - left down side
 
-
     put_img(file_name, bmp);
     free_BMP(bmp);
 }

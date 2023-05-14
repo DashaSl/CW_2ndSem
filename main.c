@@ -4,15 +4,8 @@
 
 
 int main(){
-
-    RGB clr2 = {163, 33, 152};
-    RGB clr = {125, 14, 53};
-    int* data = malloc(sizeof(int)*4);
-    data[0] = 50;
-    data[1] = 100;
-    data[2] = 100;
-    draw_hexagon("ver3.bmp", data, 0, 1, clr2, 1, clr);
-    printf("sucsess!\n");
-    free(data);
+    RGB clr = {0, 0, 0};
+    RGB clr2 = {230, 150, 200};
+    draw_Koch_frame("ver3.bmp", 50, 1, clr, clr2);
     return 0;
 }
