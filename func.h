@@ -16,4 +16,6 @@ void change_color(char* file_name, RGB to_be_changed, RGB base);
 void draw_line(BMP bmp, RGB color, int x1, int y1, int x2, int y2);
 void draw_thick_line(BMP bmp, RGB color, int x1, int y1, int x2, int y2, int width, int flag);
 void draw_hexagon(char* file_name, int* data, int mode, int width, RGB line_color, int fill_flag, RGB fill_color);
+float c(int x1, int y1, int x2, int y2);
+float b(int x1, int y1, int x2, int y2);
 #endif //CW_2NDSEM_FUNC_H

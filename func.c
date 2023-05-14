@@ -115,8 +115,7 @@ void draw_thick_line(BMP bmp, RGB color, int x1, int y1, int x2, int y2, int wid
             }
         }
     }else {
-        int wid = width /
-                  0.87; // 0.87 ~ sin(60), but it would be better to use math.h here, but gcc can't eat it correctly
+        int wid = width/0.87; // 0.87 ~ sin(60), but it would be better to use math.h here, but gcc can't eat it correctly
         if (flag) {
             for (int i = 0; i < wid; i++) {
                 draw_line(bmp, color, x1 + i, y1, x2 + i, y2);
@@ -129,14 +128,26 @@ void draw_thick_line(BMP bmp, RGB color, int x1, int y1, int x2, int y2, int wid
     }
 }
 
-void fill_hexagon_v1(RGB** arr, RGB fill_color, int x1, int x2, int y1, int y2, float d_c, float c_up, float c_down){
+void fill_hexagon_v1(RGB** arr, RGB fill_color, int x1, int x2, int y1, int y2, float* c, float* b){
     for(int x = x1; x <= x2; x++){
         for(int y = y1; y <= y2; y++){
-            if(y <= x*1.73205+c_down && y <= x*(-1.73205)+c_up+d_c && y >= x*1.73205 +c_down - d_c && y >= x*(-1.73205) + c_up){
+            if(x >= lin_func(b[0], c[0], y) && x <= lin_func(b[1], c[1], y) && x <= lin_func(b[2], c[2], y) && x >= lin_func(b[3], c[3], y)){
                 change_clr(arr[y]+x, fill_color);
             }
         }
     }
+}
+
+float b_k(int x1, int y1, int x2, int y2){
+    float d_y = y1-y2;
+    float b = (x1-x2)/d_y;
+    return b;
+}
+
+float c_k(int x1, int y1, int x2, int y2){
+    float d_y = y1-y2;
+    float c = (y1*x2 - y2*x1)/d_y;
+    return c;
 }
 
 void draw_hexagon(char* file_name, int* data, int mode, int width, RGB line_color, int fill_flag, RGB fill_color){ //mode - 0 - 2 coordinates[x1][y1][x2][y2], 1 - radius and point[rad][x][y]; data - array with cord/rad&point;
@@ -147,12 +158,12 @@ void draw_hexagon(char* file_name, int* data, int mode, int width, RGB line_colo
         y2 = y;
         x1 = x - rad;
         x4 = x + rad;
+        printf("%d - y2, %d - x1, %d - x4\n", y2, x1, x4);
     }else{//two cord
-        int x_up = data[0]; int y_up = data[1]; int x_down = data[2]; int y_down = data[3];
+        int x_right = data[0]; int y_up = data[1]; int x_left = data[2]; int y_down = data[3];
         y2 = (y_up+y_down)/2; //y_down + (y_up-y_down)/2  - if you scared/gonna work with big pictures(height/width more than 2**15)
-        printf("%d - y2\n", y2 );
-        x1 = x_up;
-        x4 = x_down;
+        x1 = x_right;
+        x4 = x_left;
         rad = (x4-x1)/2;
     }
     x2 = x1 + rad/2;
@@ -160,21 +171,33 @@ void draw_hexagon(char* file_name, int* data, int mode, int width, RGB line_colo
     y3 = y2 + rad*0.866;
     y1 = y2 - rad*0.866;
     BMP bmp = get_img(file_name);
+    if(fill_flag){
+        float* c = malloc(sizeof(float)*4);
+        float* b = malloc(sizeof(float)*4);
+        if(c == NULL || b == NULL){
+            printf("couldn't do malloc in draw_hexagon.\n");
+            exit(1);
+        }
+        c[0] = c_k(x1, y2, x2, y3);
+        c[1] = c_k(x3, y3, x4, y2);
+        c[2] = c_k(x4, y2, x3, y1);
+        c[3] = c_k(x2, y1, x1, y2);
 
-    /*if(fill_flag){
-        float d_c = 2*(y3-y1);
-        float d_x = x1 - x2;
-        float c_up = (x1*y1 - x2*y2)/d_x;
-        float c_down = (x1*y3 - x2*y2)/d_x;
-        fill_hexagon_v1(bmp.arr, fill_color, x1, x4, y1, y3, d_c, c_up, c_down);
+        b[0] = b_k(x1, y2, x2, y3);
+        b[1] = b_k(x3, y3, x4, y2);
+        b[2] = b_k(x4, y2, x3, y1);
+        b[3] =  b_k(x2, y1, x1, y2);
+        fill_hexagon_v1(bmp.arr, fill_color, x1, x4, y1, y3, c, b);
+        free(c);
+        free(b);
     }
-    */
+
+    draw_thick_line(bmp, line_color, x1, y2, x2, y3, width, 1); //c[0], b[0] - left up side
     draw_thick_line(bmp, line_color, x2, y3, x3, y3, width, 1);
-    draw_thick_line(bmp, line_color, x3, y3, x4, y2, width, 0);
-    draw_thick_line(bmp, line_color, x4, y2, x3, y1, width, 0);
+    draw_thick_line(bmp, line_color, x3, y3, x4, y2, width, 0); //c[1] b[1] - right up side
+    draw_thick_line(bmp, line_color, x4, y2, x3, y1, width, 0); //c[2] b[2] - right down side
     draw_thick_line(bmp, line_color, x3, y1, x2, y1, width, 0);
-    draw_thick_line(bmp, line_color, x2, y1, x1, y2, width, 1);
-    draw_thick_line(bmp, line_color, x1, y2, x2, y3, width, 1);
+    draw_thick_line(bmp, line_color, x2, y1, x1, y2, width, 1); //c[3] b[3] - left down side
 
 
     put_img(file_name, bmp);
