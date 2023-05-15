@@ -26,4 +26,5 @@ float b(int x1, int y1, int x2, int y2);
 void erase_line(BMP bmp, RGB** arr_copy,  int x1, int y1, int x2, int y2);
 void draw_Koch_snowflake(BMP bmp,RGB** arr_copy, int x1, int y1, int x2, int y2, RGB color, int n);
 void draw_Koch_frame(char* file_name, int width, int fill_flag, RGB line_color, RGB fill_color);
+void draw_Minkowski_sausage(BMP bmp,RGB** arr_copy, int x1, int y1, int x2, int y2, RGB color, int n);
 #endif

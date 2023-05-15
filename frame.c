@@ -83,7 +83,7 @@ void draw_Koch_snowflake(BMP bmp,RGB** arr_copy, int x1, int y1, int x2, int y2,
     }
 }
 
-void fill_frame(BMP bmp, RGB fill_color, RGB line_color, int x, int y){
+void fill_frame(BMP bmp, RGB fill_color, RGB line_color, int x, int y){ //better not use this, cause it works only with small pictures (otherwise stak overflow, cause too many recursions)
     int case1 = x >= 0 && x < bmp.inf.Width;
     int case2 = y >= 0 && y < abs(bmp.inf.Height);
     if(case1 && case2){
@@ -136,7 +136,88 @@ void draw_Koch_frame(char* file_name, int width, int fill_flag, RGB line_color, 
     }
     /*if(fill_flag){
         fill_frame(bmp_ans, fill_color, line_color, 0, 0);
-    }*/ //better not use this, cause it works only with small pictures (otherwise stak overflow, cause too many recursions)
+    }*/
+    put_img(file_name, bmp_ans);
+    free_BMP(bmp_ans);
+    free_BMP(bmp_copy);
+}
+
+void draw_Minkowski_sausage(BMP bmp,RGB** arr_copy, int x1, int y1, int x2, int y2, RGB color, int n){
+    if(n){
+        if(y1 == y2){
+            int x_1 = (3*x1+x2)/4;
+            int x_2 = (x1+x2)/2;
+            int x_3 = (3*x2+x1)/4;
+            int d_y = (x2-x1)/4;
+
+            draw_Minkowski_sausage(bmp, arr_copy, x1, y1, x_1, y1,color, n-1);
+            draw_Minkowski_sausage(bmp, arr_copy, x_1, y1, x_1, y1+d_y,color, n-1);
+            draw_Minkowski_sausage(bmp, arr_copy, x_1, y1+d_y, x_2, y1+d_y,color, n-1);
+            draw_Minkowski_sausage(bmp, arr_copy, x_2, y1+d_y, x_2, y1,color, n-1);
+
+            draw_Minkowski_sausage(bmp, arr_copy, x_2, y1, x_2, y1-d_y,color, n-1);
+            draw_Minkowski_sausage(bmp, arr_copy, x_2, y1-d_y, x_3, y1-d_y,color, n-1);
+            draw_Minkowski_sausage(bmp, arr_copy, x_3, y1-d_y, x_3, y1,color, n-1);
+            draw_Minkowski_sausage(bmp, arr_copy, x_3, y1, x2, y1, color, n-1);
+        }else{
+            int y_1 = (3*y1+y2)/4;
+            int y_2 = (y1+y2)/2;
+            int y_3 = (3*y2+y1)/4;
+            int d_x = (y2-y1)/4;
+            draw_Minkowski_sausage(bmp, arr_copy, x1, y1, x1, y_1,color, n-1);
+            draw_Minkowski_sausage(bmp, arr_copy, x1, y_1, x1-d_x, y_1,color, n-1);
+            draw_Minkowski_sausage(bmp, arr_copy, x1-d_x, y_1, x1-d_x, y_2,color, n-1);
+            draw_Minkowski_sausage(bmp, arr_copy, x1-d_x, y_2, x1, y_2,color, n-1);
+
+            draw_Minkowski_sausage(bmp, arr_copy, x1, y_2, x1+d_x, y_2,color, n-1);
+            draw_Minkowski_sausage(bmp, arr_copy, x1+d_x, y_2, x1+d_x, y_3,color, n-1);
+            draw_Minkowski_sausage(bmp, arr_copy, x1+d_x, y_3, x1, y_3,color, n-1);
+            draw_Minkowski_sausage(bmp, arr_copy, x1, y_3, x1, y2,color, n-1);
+        }
+    }else{
+        if(y1 == y2){
+            int x_1 = (3*x1+x2)/4;
+            int x_2 = (x1+x2)/2;
+            int x_3 = (3*x2+x1)/4;
+            int d_y = (x2-x1)/4;
+
+            draw_line(bmp, color, x1, y1, x_1, y1);
+            draw_line(bmp, color, x_1, y1, x_1, y1+d_y);
+            draw_line(bmp, color, x_1, y1+d_y, x_2, y1+d_y);
+            draw_line(bmp, color, x_2, y1+d_y, x_2, y1);
+
+            draw_line(bmp, color, x_2, y1, x_2, y1-d_y);
+            draw_line(bmp, color, x_2, y1-d_y, x_3, y1-d_y);
+            draw_line(bmp, color, x_3, y1-d_y, x_3, y1);
+            draw_line(bmp, color, x_3, y1, x2, y1);
+        }else{
+            int y_1 = (3*y1+y2)/4;
+            int y_2 = (y1+y2)/2;
+            int y_3 = (3*y2+y1)/4;
+            int d_x = (y2-y1)/4;
+            draw_line(bmp, color, x1, y1, x1, y_1);
+            draw_line(bmp, color, x1, y_1, x1-d_x, y_1);
+            draw_line(bmp, color, x1-d_x, y_1, x1-d_x, y_2);
+            draw_line(bmp, color, x1-d_x, y_2, x1, y_2);
+
+            draw_line(bmp, color, x1, y_2, x1+d_x, y_2);
+            draw_line(bmp, color, x1+d_x, y_2, x1+d_x, y_3);
+            draw_line(bmp, color, x1+d_x, y_3, x1, y_3);
+            draw_line(bmp, color, x1, y_3, x1, y2);
+
+        }
+    }
+}
+
+void draw_Minkowski_frame(char* file_name, int width, int fill_flag, RGB line_color, RGB fill_color){
+    BMP bmp_ans = get_img(file_name);
+    BMP bmp_copy = get_img(file_name);
+
+
+
+    /*if(fill_flag){
+        fill_frame(bmp_ans, fill_color, line_color, 0, 0);
+    }*/
     put_img(file_name, bmp_ans);
     free_BMP(bmp_ans);
     free_BMP(bmp_copy);
