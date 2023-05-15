@@ -99,8 +99,72 @@ void fill_frame(BMP bmp, RGB fill_color, RGB line_color, int x, int y){ //better
     }
 }
 
-void fill_v2(BMP bmp, RGB fill_color, RGB line_color, int x, int y){
+typedef struct NODE{
+    int x;
+    int y;
+    struct NODE* next;
+}NODE;
 
+typedef struct que{
+    NODE* tail;
+    NODE* head;
+    int size;
+}que;
+
+NODE* cr_node(int x_, int y_){
+    NODE* ans = malloc(sizeof(NODE));
+    ans->x = x_;
+    ans->y = y_;
+    ans->next = NULL;
+    return ans;
+}
+
+void add_node(que* ochrd, int x, int y){
+    NODE* tmp = cr_node(x, y);
+    if(ochrd->size){
+        ochrd->tail->next = tmp;
+        ochrd->tail = tmp;
+        ochrd->size++;
+    }else {
+        ochrd->size = 1;
+        ochrd->tail = tmp;
+        ochrd->head = tmp;
+    }
+}
+
+void pop_first_node(que* ochrd){
+    NODE* tmp = ochrd->head;
+    ochrd->head = ochrd->head->next;
+    ochrd->size--;
+    free(tmp);
+}
+
+void fill_v2(BMP bmp, RGB fill_color, RGB line_color, int a, int b){
+    que* ochrd = malloc(sizeof(que));
+    ochrd->size = 0;
+    add_node(ochrd, a, b);
+    int x, y;
+    int case1, case2;
+    while(ochrd->size){
+        x = ochrd->head->x;
+        y = ochrd->head->y;
+        printf("%d, %d\n", x, y);  
+        case1 = x >= 0 && x < bmp.inf.Width;
+        case2 =  y>=0 && y < abs(bmp.inf.Height);
+        if(case1 && case2){
+            case1 = !cmp_rgb(bmp.arr[y][x], fill_color);
+            case2 = !cmp_rgb(bmp.arr[y][x], line_color);
+            if(case1 && case2){
+                change_clr(bmp.arr[y]+x, fill_color);
+                add_node(ochrd, x+1, y);
+                add_node(ochrd, x-1, y);
+                add_node(ochrd, x, y+1);
+                add_node(ochrd, x, y-1);
+            }
+        }
+        pop_first_node(ochrd);
+    }
+    free(ochrd);
 }
 
 int ret_n(int L_teory){
@@ -222,43 +286,38 @@ int ret_n_Min(int n){
 }
 
 void draw_Minkowski_frame(char* file_name, int width, int fill_flag, RGB line_color, RGB fill_color){
-    BMP bmp_ans = get_img(file_name);
-    int l_theor= 2*(width-5);
-    int l_4;
-    int n;
+    BMP bmp = get_img(file_name);
 
-    int x_right = width - (width-5)/2;
-    int x_left = bmp_ans.inf.Width - width + (width-5)/2;
+    int x_right = bmp.inf.Width - width;
+    int x_left = width;
 
-    int y_down = width - (width-5)/2;
-    int y_up = bmp_ans.inf.Height - width + (width-5)/2;
+    int y_up = bmp.inf.Height - width;
+    int y_down = width;
 
-    int l_act_w = (bmp_ans.inf.Width - 2*width + l_theor/2)/(((bmp_ans.inf.Width - 2*width + l_theor/2)/l_theor)+1);
-    int l_act_h = (bmp_ans.inf.Height - 2*width + l_theor/2)/(((bmp_ans.inf.Height - 2*width + l_theor/2)/l_theor)+1);
-    int i = 0;
-    n = ret_n_Min(l_act_w);
-    l_4 = ((3*l_act_w)/4);
-    while(x_right+(i+1)*l_4 < x_left){
-        draw_Minkowski_sausage(bmp_ans, x_right + i*l_4, y_up, x_right + (i+1)*l_4, y_up, line_color, n);
-        draw_Minkowski_sausage(bmp_ans, x_right + (i+1)*l_4, y_down, x_right + i*l_4, y_down, line_color, n);
-        i++;
+    int k_x = (x_right-x_left)/((width-1)*2);
+    int k_y = (y_up-y_down)/((width-1)*2);
+
+    int l_x = (x_right-x_left)/k_x;
+    int l_y = (y_up-y_down)/k_y;
+    int n = ret_n_Min(l_x);
+
+    int i;
+    for(i = 0; i < k_x; i++){
+        draw_Minkowski_sausage(bmp, x_left + i*l_x, y_down, x_left + (i+1)*l_x, y_down, line_color, n);
+        draw_Minkowski_sausage(bmp, x_right - (i+1)*l_x, y_up, x_right - i*l_x, y_up, line_color, n);
     }
-    draw_line(bmp_ans, line_color, x_right + i*l_4, y_up, x_left, y_up);
-    draw_line(bmp_ans, line_color, x_right + i*l_4, y_down, x_left, y_down);
+    draw_line(bmp, line_color, x_left + (i)*l_x, y_down, x_right, y_down);
+    draw_line(bmp, line_color, x_left, y_up, x_right - (i)*l_x, y_up);
 
-    i = 0;
-    n = ret_n_Min(l_act_h);
-    l_4 = ((3*l_act_h)/4);
-    while(y_down+(i+1)*l_4 < y_up){
-        draw_Minkowski_sausage(bmp_ans, x_right, y_down + i*l_4, x_right, y_down +(i+1)*l_4, line_color, n);
-        draw_Minkowski_sausage(bmp_ans, x_left, y_down + (i+1)*l_4, x_left, y_down + i*l_4, line_color, n);
-        i++;
+    n = ret_n_Min(l_y);
+    for(i = 0; i < k_y; i++){
+        draw_Minkowski_sausage(bmp, x_left, y_up - i*l_y , x_left, y_up - (i+1)*l_y, line_color, n);
+        draw_Minkowski_sausage(bmp, x_right, y_down + (i+1)*l_y, x_right, y_down + i*l_y, line_color, n);
     }
-    draw_line(bmp_ans, line_color, x_right, y_down + i*l_4, x_right, y_up);
-    draw_line(bmp_ans, line_color, x_left, y_down + i*l_4, x_left, y_up);
-    /*if(fill_flag){
-        fill_frame(bmp_ans, fill_color, line_color, 0, 0);
-    }*/
-    put_img(file_name, bmp_ans);
-    free_BMP(bmp_ans);
+    draw_line(bmp, line_color, x_left, y_up - i*l_y, x_left, y_down);
+    draw_line(bmp, line_color, x_right, y_down + i*l_y, x_right, y_up);    /*if(fill_flag){
+    //    fill_frame(bmp_ans, fill_color, line_color, 0, 0);
+    //}*/
+    put_img(file_name, bmp);
+    free_BMP(bmp);
 }
