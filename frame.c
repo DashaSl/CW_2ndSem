@@ -99,6 +99,10 @@ void fill_frame(BMP bmp, RGB fill_color, RGB line_color, int x, int y){ //better
     }
 }
 
+void fill_v2(BMP bmp, RGB fill_color, RGB line_color, int x, int y){
+
+}
+
 int ret_n(int L_teory){
     int n = 1;
     if(L_teory > 75) n = 2;
@@ -142,7 +146,7 @@ void draw_Koch_frame(char* file_name, int width, int fill_flag, RGB line_color, 
     free_BMP(bmp_copy);
 }
 
-void draw_Minkowski_sausage(BMP bmp,RGB** arr_copy, int x1, int y1, int x2, int y2, RGB color, int n){
+void draw_Minkowski_sausage(BMP bmp, int x1, int y1, int x2, int y2, RGB color, int n){
     if(n){
         if(y1 == y2){
             int x_1 = (3*x1+x2)/4;
@@ -150,29 +154,29 @@ void draw_Minkowski_sausage(BMP bmp,RGB** arr_copy, int x1, int y1, int x2, int 
             int x_3 = (3*x2+x1)/4;
             int d_y = (x2-x1)/4;
 
-            draw_Minkowski_sausage(bmp, arr_copy, x1, y1, x_1, y1,color, n-1);
-            draw_Minkowski_sausage(bmp, arr_copy, x_1, y1, x_1, y1+d_y,color, n-1);
-            draw_Minkowski_sausage(bmp, arr_copy, x_1, y1+d_y, x_2, y1+d_y,color, n-1);
-            draw_Minkowski_sausage(bmp, arr_copy, x_2, y1+d_y, x_2, y1,color, n-1);
+            draw_Minkowski_sausage(bmp, x1, y1, x_1, y1,color, n-1);
+            draw_Minkowski_sausage(bmp, x_1, y1, x_1, y1+d_y,color, n-1);
+            draw_Minkowski_sausage(bmp, x_1, y1+d_y, x_2, y1+d_y,color, n-1);
+            draw_Minkowski_sausage(bmp, x_2, y1+d_y, x_2, y1,color, n-1);
 
-            draw_Minkowski_sausage(bmp, arr_copy, x_2, y1, x_2, y1-d_y,color, n-1);
-            draw_Minkowski_sausage(bmp, arr_copy, x_2, y1-d_y, x_3, y1-d_y,color, n-1);
-            draw_Minkowski_sausage(bmp, arr_copy, x_3, y1-d_y, x_3, y1,color, n-1);
-            draw_Minkowski_sausage(bmp, arr_copy, x_3, y1, x2, y1, color, n-1);
+            draw_Minkowski_sausage(bmp, x_2, y1, x_2, y1-d_y,color, n-1);
+            draw_Minkowski_sausage(bmp, x_2, y1-d_y, x_3, y1-d_y,color, n-1);
+            draw_Minkowski_sausage(bmp, x_3, y1-d_y, x_3, y1,color, n-1);
+            draw_Minkowski_sausage(bmp, x_3, y1, x2, y1, color, n-1);
         }else{
             int y_1 = (3*y1+y2)/4;
             int y_2 = (y1+y2)/2;
             int y_3 = (3*y2+y1)/4;
             int d_x = (y2-y1)/4;
-            draw_Minkowski_sausage(bmp, arr_copy, x1, y1, x1, y_1,color, n-1);
-            draw_Minkowski_sausage(bmp, arr_copy, x1, y_1, x1-d_x, y_1,color, n-1);
-            draw_Minkowski_sausage(bmp, arr_copy, x1-d_x, y_1, x1-d_x, y_2,color, n-1);
-            draw_Minkowski_sausage(bmp, arr_copy, x1-d_x, y_2, x1, y_2,color, n-1);
+            draw_Minkowski_sausage(bmp, x1, y1, x1, y_1,color, n-1);
+            draw_Minkowski_sausage(bmp, x1, y_1, x1-d_x, y_1,color, n-1);
+            draw_Minkowski_sausage(bmp, x1-d_x, y_1, x1-d_x, y_2,color, n-1);
+            draw_Minkowski_sausage(bmp, x1-d_x, y_2, x1, y_2,color, n-1);
 
-            draw_Minkowski_sausage(bmp, arr_copy, x1, y_2, x1+d_x, y_2,color, n-1);
-            draw_Minkowski_sausage(bmp, arr_copy, x1+d_x, y_2, x1+d_x, y_3,color, n-1);
-            draw_Minkowski_sausage(bmp, arr_copy, x1+d_x, y_3, x1, y_3,color, n-1);
-            draw_Minkowski_sausage(bmp, arr_copy, x1, y_3, x1, y2,color, n-1);
+            draw_Minkowski_sausage(bmp, x1, y_2, x1+d_x, y_2,color, n-1);
+            draw_Minkowski_sausage(bmp, x1+d_x, y_2, x1+d_x, y_3,color, n-1);
+            draw_Minkowski_sausage(bmp, x1+d_x, y_3, x1, y_3,color, n-1);
+            draw_Minkowski_sausage(bmp, x1, y_3, x1, y2,color, n-1);
         }
     }else{
         if(y1 == y2){
@@ -209,16 +213,52 @@ void draw_Minkowski_sausage(BMP bmp,RGB** arr_copy, int x1, int y1, int x2, int 
     }
 }
 
+int ret_n_Min(int n){
+    int ans = 1;
+    if(n > 250) ans = 2;
+    if(n > 400) ans = 3;
+    if(n > 600) ans = 4;
+    return ans;
+}
+
 void draw_Minkowski_frame(char* file_name, int width, int fill_flag, RGB line_color, RGB fill_color){
     BMP bmp_ans = get_img(file_name);
-    BMP bmp_copy = get_img(file_name);
+    int l_theor= 2*(width-5);
+    int l_4;
+    int n;
 
+    int x_right = width - (width-5)/2;
+    int x_left = bmp_ans.inf.Width - width + (width-5)/2;
 
+    int y_down = width - (width-5)/2;
+    int y_up = bmp_ans.inf.Height - width + (width-5)/2;
 
+    int l_act_w = (bmp_ans.inf.Width - 2*width + l_theor/2)/(((bmp_ans.inf.Width - 2*width + l_theor/2)/l_theor)+1);
+    int l_act_h = (bmp_ans.inf.Height - 2*width + l_theor/2)/(((bmp_ans.inf.Height - 2*width + l_theor/2)/l_theor)+1);
+    int i = 0;
+    n = ret_n_Min(l_act_w);
+    l_4 = ((3*l_act_w)/4);
+    while(x_right+(i+1)*l_4 < x_left){
+        draw_Minkowski_sausage(bmp_ans, x_right + i*l_4, y_up, x_right + (i+1)*l_4, y_up, line_color, n);
+        draw_Minkowski_sausage(bmp_ans, x_right + (i+1)*l_4, y_down, x_right + i*l_4, y_down, line_color, n);
+        i++;
+    }
+    draw_line(bmp_ans, line_color, x_right + i*l_4, y_up, x_left, y_up);
+    draw_line(bmp_ans, line_color, x_right + i*l_4, y_down, x_left, y_down);
+
+    i = 0;
+    n = ret_n_Min(l_act_h);
+    l_4 = ((3*l_act_h)/4);
+    while(y_down+(i+1)*l_4 < y_up){
+        draw_Minkowski_sausage(bmp_ans, x_right, y_down + i*l_4, x_right, y_down +(i+1)*l_4, line_color, n);
+        draw_Minkowski_sausage(bmp_ans, x_left, y_down + (i+1)*l_4, x_left, y_down + i*l_4, line_color, n);
+        i++;
+    }
+    draw_line(bmp_ans, line_color, x_right, y_down + i*l_4, x_right, y_up);
+    draw_line(bmp_ans, line_color, x_left, y_down + i*l_4, x_left, y_up);
     /*if(fill_flag){
         fill_frame(bmp_ans, fill_color, line_color, 0, 0);
     }*/
     put_img(file_name, bmp_ans);
     free_BMP(bmp_ans);
-    free_BMP(bmp_copy);
 }
