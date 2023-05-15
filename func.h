@@ -29,4 +29,5 @@ void draw_Koch_frame(char* file_name, int width, int fill_flag, RGB line_color, 
 void draw_Minkowski_sausage(BMP bmp, int x1, int y1, int x2, int y2, RGB color, int n);
 void draw_Minkowski_frame(char* file_name, int width, int fill_flag, RGB line_color, RGB fill_color);
 void fill_v2(BMP bmp, RGB fill_color, RGB line_color, int a, int b);
+void draw_simple_frame(char* file_name, int width, RGB fill_color);
 #endif

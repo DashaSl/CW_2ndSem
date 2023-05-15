@@ -148,7 +148,6 @@ void fill_v2(BMP bmp, RGB fill_color, RGB line_color, int a, int b){
     while(ochrd->size){
         x = ochrd->head->x;
         y = ochrd->head->y;
-        printf("%d, %d\n", x, y);  
         case1 = x >= 0 && x < bmp.inf.Width;
         case2 =  y>=0 && y < abs(bmp.inf.Height);
         if(case1 && case2){
@@ -169,10 +168,10 @@ void fill_v2(BMP bmp, RGB fill_color, RGB line_color, int a, int b){
 
 int ret_n(int L_teory){
     int n = 1;
-    if(L_teory > 75) n = 2;
-    if(L_teory > 200) n = 3;
-    if(L_teory > 400) n = 4;
-    if(L_teory > 600) n = 5;
+    if(L_teory > 30) n = 2;
+    if(L_teory > 100) n = 3;
+    if(L_teory > 170) n = 4;
+    if(L_teory > 300) n = 5;
     return n;
 }
 
@@ -186,6 +185,20 @@ void draw_Koch_frame(char* file_name, int width, int fill_flag, RGB line_color, 
     int actual_num_hei = 2 + frame_height/L_theory;
     int d_wid = frame_width/actual_num_wid;
     int d_hei = frame_height/actual_num_hei;
+
+    if(fill_flag){
+        int wid = bmp_ans.inf.Width;
+        int hei = abs(bmp_ans.inf.Height);
+        draw_thick_line(bmp_ans, fill_color,0, 0, 0, hei-1, width, 1);
+        draw_thick_line(bmp_ans, fill_color,wid-1, 0, wid-1, hei-1, width, 0);
+        draw_thick_line(bmp_ans, fill_color,0, hei-1, wid-1, hei-1, width, 1);
+        draw_thick_line(bmp_ans, fill_color,0, 0, wid-1, 0, width, 0);
+
+        draw_thick_line(bmp_copy, fill_color,0, 0, 0, hei-1, width, 1);
+        draw_thick_line(bmp_copy, fill_color,wid-1, 0, wid-1, hei-1, width, 0);
+        draw_thick_line(bmp_copy, fill_color,0, hei-1, wid-1, hei-1, width, 1);
+        draw_thick_line(bmp_copy, fill_color,0, 0, wid-1, 0, width, 0);
+    }
 
     draw_line(bmp_ans, line_color, width, width, width, bmp_ans.inf.Height - width);
     draw_line(bmp_ans, line_color, width, bmp_ans.inf.Height - width, bmp_ans.inf.Width -width, bmp_ans.inf.Height - width);
@@ -202,9 +215,6 @@ void draw_Koch_frame(char* file_name, int width, int fill_flag, RGB line_color, 
         draw_Koch_snowflake(bmp_ans, bmp_copy.arr, width, width + i*d_hei, width, width + (i+1)*d_hei ,line_color , n_hei);
         draw_Koch_snowflake(bmp_ans, bmp_copy.arr, bmp_ans.inf.Width - width, width + (i+1)*d_hei, bmp_ans.inf.Width - width, width+ d_hei*i , line_color, n_hei);
     }
-    /*if(fill_flag){
-        fill_frame(bmp_ans, fill_color, line_color, 0, 0);
-    }*/
     put_img(file_name, bmp_ans);
     free_BMP(bmp_ans);
     free_BMP(bmp_copy);
@@ -315,9 +325,30 @@ void draw_Minkowski_frame(char* file_name, int width, int fill_flag, RGB line_co
         draw_Minkowski_sausage(bmp, x_right, y_down + (i+1)*l_y, x_right, y_down + i*l_y, line_color, n);
     }
     draw_line(bmp, line_color, x_left, y_up - i*l_y, x_left, y_down);
-    draw_line(bmp, line_color, x_right, y_down + i*l_y, x_right, y_up);    /*if(fill_flag){
-    //    fill_frame(bmp_ans, fill_color, line_color, 0, 0);
-    //}*/
+    draw_line(bmp, line_color, x_right, y_down + i*l_y, x_right, y_up);
+
+     if(fill_flag){
+         fill_v2(bmp, fill_color, line_color, 0, 0);
+     }
+    put_img(file_name, bmp);
+    free_BMP(bmp);
+}
+
+void draw_simple_frame(char* file_name, int width, RGB fill_color){
+    BMP bmp = get_img(file_name);
+
+    int wid = bmp.inf.Width;
+    int hei = abs(bmp.inf.Height);
+    draw_thick_line(bmp, fill_color,0, 0, 0, hei-1, width, 1);
+    draw_thick_line(bmp, fill_color,wid-1, 0, wid-1, hei-1, width, 0);
+    draw_thick_line(bmp, fill_color,0, hei-1, wid-1, hei-1, width, 1);
+    draw_thick_line(bmp, fill_color,0, 0, wid-1, 0, width, 0);
+
+    draw_thick_line(bmp, fill_color,0, 0, 0, hei-1, width, 1);
+    draw_thick_line(bmp, fill_color,wid-1, 0, wid-1, hei-1, width, 0);
+    draw_thick_line(bmp, fill_color,0, hei-1, wid-1, hei-1, width, 1);
+    draw_thick_line(bmp, fill_color,0, 0, wid-1, 0, width, 0);
+
     put_img(file_name, bmp);
     free_BMP(bmp);
 }
