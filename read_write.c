@@ -1,6 +1,7 @@
 #include "CWlib.h"
 #include "func.h"
-
+#include <ctype.h>
+#include <string.h>
 void free_BMP(BMP bmp){
     for(int i = 0; i < abs(bmp.inf.Height); i++){
         free((bmp.arr)[i]);
@@ -89,4 +90,26 @@ void put_img(char* file_name, BMP bmp) {
     }
     fclose(fp);
 
+}
+
+int not_num_check(char* s){ //check if it's a non-zero positive integer
+    if(!strlen(s)) return 0;
+    if(s[0] == '0' && (strlen(s) > 1)) return 0;
+    int i = 0;
+    while(s[i] != '\0'){
+        if(!isdigit(s[i])){
+            return 1;
+        }
+        i++;
+    }
+    return 0;
+};
+
+void printhelp(){
+    //printf("Well, help yourself...\n");
+    printf("HUI\n");
+}
+int check_cord(int x1, int y1, int x2, int y2){
+    int ans = (x1 <= x2) && (y1 >= y2);
+    return ans;
 }

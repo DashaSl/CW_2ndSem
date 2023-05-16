@@ -72,6 +72,12 @@ void fill_v2(BMP bmp, RGB fill_color, RGB line_color, int a, int b){
 
 //end fill algorithm
 //Koch start
+
+int check_bmp(BMP bmp, int width){
+    int case1 = width >= (abs(bmp.inf.Height)/2);
+    int case2 = width >= bmp.inf.Width/2;
+    return (case1 || case2);
+}
 void draw_Koch_snowflake(BMP bmp, int x1, int y1, int x2, int y2, RGB color, int n){
     if(n){
         float L = hypot((x1-x2), (y1-y2));
@@ -106,7 +112,10 @@ int ret_n(int L_teory){
 
 void draw_Koch_frame(char* file_name, int width, int fill_flag, RGB line_color, RGB fill_color){
     BMP bmp_ans = get_img(file_name);
-
+    if(check_bmp(bmp_ans, width)){
+        printf("this frame will cover the whole picture! Dont do that\n");
+        exit(1);
+    }
     float L_theory = width * 2 * sqrt(3);
 
     int frame_width = bmp_ans.inf.Width - (2 * width);
@@ -191,7 +200,10 @@ int ret_n_Min(int n){
 
 void draw_Minkowski_frame(char* file_name, int width, int fill_flag, RGB line_color, RGB fill_color){
     BMP bmp = get_img(file_name);
-
+    if(check_bmp(bmp, width)){
+        printf("this frame will cover the whole picture! Dont do that\n");
+        exit(1);
+    }
     int x_right = bmp.inf.Width - width;
     int x_left = width;
 

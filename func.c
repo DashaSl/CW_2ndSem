@@ -14,9 +14,36 @@ int cmp_rgb(RGB rgb1, RGB rgb2){
     return 0;
 }
 
+int check_bmp_c_p(BMP sour, BMP paste, int xs1, int ys1, int xs2, int ys2, int xp, int yp){
+    int sour_wid = sour.inf.Width;
+    int sour_hei = abs(sour.inf.Height);
+
+    int pa_wid = paste.inf.Width;
+    int pa_hei = abs(paste.inf.Height);
+    //if x1, y1, x2, y2 inside the pick
+    int case1 = (xs1 <0) || (xs1 >= sour_wid);
+    int case2 = (ys1 < 0) || (ys1 >= sour_hei);
+    int case3 = (xs2 <0) || (xs2 >= sour_wid);
+    int case4 = (ys2 < 0) || (ys2 >= sour_hei);
+    //if xp, yp
+    int case5 = (yp < 0) || (yp >= pa_hei);
+    int case6 = (xp < 0) || (xp >= pa_wid);
+    //if there is a place
+    int cmp_wid = xs2 - xs1;
+    int cmp_hei = ys1 - ys2;
+
+    int case7 = (pa_wid - xp) < cmp_wid;
+    int case8 = yp < cmp_hei;
+    return (case1 || case2 || case3 || case4 || case5 || case6 || case7 || case8);
+}
+
 void copy_paste(char* source, char* paste_here, int xs1, int ys1, int xs2, int ys2, int xp, int yp){
     BMP sour = get_img(source);
     BMP paste = get_img(paste_here);
+    if(check_bmp_c_p(sour, paste, xs1, ys1, xs2, ys2, xp, yp)){
+        printf("impossible coordinates for these pictures!\n");
+        exit(1);
+    }
     int width = xs2 - xs1;
     int height = ys1 - ys2;
     for(int i = 0; i < height; i++){
@@ -150,6 +177,17 @@ float c_k(int x1, int y1, int x2, int y2){
     return c;
 }
 
+int check_coord_hex(BMP bmp,int x1, int x2, int y1, int y2, int width){
+    int hei = abs(bmp.inf.Height);
+    int wid = bmp.inf.Width;
+    int case1 = x1 < 0 || x1 >= wid;
+    int case2 = x2 <0 || x2 >= wid;
+    int case3 = y1 < 0 || y1 >= hei;
+    int case4 = y2 < 0 || y2 >= hei;
+    int case5 = (width > (x2 - x1)) || (width > (y2 - y1));
+    return (case1 || case2 || case3 || case4 || case5);
+}
+
 void draw_hexagon(char* file_name, int* data, int mode, int width, RGB line_color, int fill_flag, RGB fill_color){ //mode - 0 - 2 coordinates[x1][y1][x2][y2], 1 - radius and point[rad][x][y]; data - array with cord/rad&point;
     int y1, y2, y3, x1, x2, x3, x4; //try to image hexagon and you will understand why
     int rad;
@@ -158,7 +196,6 @@ void draw_hexagon(char* file_name, int* data, int mode, int width, RGB line_colo
         y2 = y;
         x1 = x - rad;
         x4 = x + rad;
-        printf("%d - y2, %d - x1, %d - x4\n", y2, x1, x4);
     }else{//two cord
         int x_right = data[0]; int y_up = data[1]; int x_left = data[2]; int y_down = data[3];
         y2 = (y_up+y_down)/2; //y_down + (y_up-y_down)/2  - if you scared/gonna work with big pictures(height/width more than 2**15)
@@ -171,6 +208,12 @@ void draw_hexagon(char* file_name, int* data, int mode, int width, RGB line_colo
     y3 = y2 + rad*0.866;
     y1 = y2 - rad*0.866;
     BMP bmp = get_img(file_name);
+
+    if(check_coord_hex(bmp, x1, x4, y1, y3, width)){
+        printf("impossible coordinates\n");
+        exit(1);
+    }
+
     if(fill_flag){
         float* c = malloc(sizeof(float)*4);
         float* b = malloc(sizeof(float)*4);
