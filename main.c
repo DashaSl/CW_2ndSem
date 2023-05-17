@@ -88,6 +88,10 @@ int main(int argc, char *argv[]){
                 }
                 break;
             case 's':
+                if(optind >= argc){
+                    printf("not enough arguments\n");
+                    exit(1);
+                }
                 if(not_num_check(optarg) || not_num_check(argv[optind])){
                     printf("There is an impostor! Not Natural number found.\n");
                     exit(1);
@@ -98,6 +102,10 @@ int main(int argc, char *argv[]){
                 }
                 break;
             case 'e':
+                if(optind >= argc){
+                    printf("not enough arguments\n");
+                    exit(1);
+                }
                 if(not_num_check(optarg) || not_num_check(argv[optind])){
                     printf("There is an impostor! Not Natural number found.\n");
                     exit(1);
@@ -108,6 +116,10 @@ int main(int argc, char *argv[]){
                 }
                 break;
             case 'p':
+                if(optind >= argc){
+                    printf("not enough arguments\n");
+                    exit(1);
+                }
                 if(not_num_check(optarg) || not_num_check(argv[optind])){
                     printf("There is an impostor! Not Natural number found.\n");
                     exit(1);
@@ -125,6 +137,10 @@ int main(int argc, char *argv[]){
                 }
                 break;
             case 'g':
+                if(optind+1 >= argc){
+                    printf("not enough arguments\n");
+                    exit(1);
+                }
                 if(clr1_is_taken_flag){
                     printf("you cant have two colors in one\n");
                     exit(1);
@@ -147,6 +163,10 @@ int main(int argc, char *argv[]){
                 clr1_is_taken_flag = 1;
                 break;
             case 'b':
+                if(optind+1 >= argc){
+                    printf("not enough arguments\n");
+                    exit(1);
+                }
                 if(clr2_is_taken_flag){
                     printf("you cant have two colors in one\n");
                     exit(1);

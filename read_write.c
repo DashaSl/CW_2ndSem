@@ -106,11 +106,41 @@ int not_num_check(char* s){ //check if it's a non-zero positive integer
 };
 
 void printhelp(){
-    //printf("Well, help yourself...\n");
+    printf("You have 5 options:\n1)draw Hexagon, 2)copy a part of an image and paste it on another image 3)draw a frame 4)change chosen color on other color 5)show bmp file info\n");
     printf("\n");
+    printf("1)to draw hexagon, choose option -H/--hexagon\nchoose mode 1 (--mode/-m 1) if you want to draw it using a point and radius; mode 0 if you want to draw using upper left and lower down coordinates\n");
+    printf("if you've chosen mode 1 chose radius (-r/--radius 20) and start point (-s/--start 30 30); if mode 0 chose start point and end point(-e/--end 50 10)\n");
+    printf("chose thickness of lines using -w/--width (-w 30)\n");
+    printf("chose line color -g/--clr1 (-g 23 167 80)\n");
+    printf("chose to fill(1) or not to fill(0) hexagon (-z/--fill_flag 0)\n");
+    printf("select a color, if you've chosen fill_flag 1 (-b/--clr2 33 33 33)\n");
+    printf("chose your file using -f/--file_name (-f name_of_the_file)\n");
+    printf("example: ./CW2 --hexagon --start 0 110 --end 110 0 -w 7 --clr1 20 20 20 --clr2 200 100 50 -z 1 --file_name Amogus.bmp\n");
     printf("\n");
+    printf("2)to copy & paste, chose option -C/--copy\n");
+    printf("chose source file (-f/--file_name) and the file, where you going to paste to, (-o/--out_file)\n");
+    printf("chose upper left coordinates (-s/--start) and lower right (-e/--end) of the part of source image to be copied\n");
+    printf("chose a point on the output file, where the upper left corner of the copied piece will be (-p/--point)\n");
+    printf("example: ./CW2 -C --start 10 200 --end 150 40 -p 30 230 --file_name file1.bmp --out_file file2.bmp\n");
     printf("\n");
+    printf("3)to draw a frame, chose -F/--frame\n");
+    printf("select the type of frame using -m/--mode. 0 - simple frame, 1 - Koch line frame, 2 - Minkowski line frame\n");
+    printf("If you selected mode 0 chose width of the frame (-w/--width) and color (-g/--clr1) only.\n");
+    printf("If you selected mode 1 or 2 chose width (-w/--width) of the frame,\n");
+    printf("color of lines of the frame (-g/--clr1)\n");
+    printf("chose to fill(1) or not to fill(0) frame\n");
+    printf("select a color, if you've chosen fill_flag 1 (-b/--clr2)\n");
+    printf("chose file -f/--file_name\n");
+    printf("example: ./CW2 -F --width 50 -z 1 --clr1 55 55 55 --clr2 1 1 1 -f file.bmp\n");
     printf("\n");
+    printf("4)to change color of all pixels of the chosen color to the other color, choose option -G/--changeclr\n");
+    printf("chose your file -f/--file_name\n");
+    printf("chose color-to-be-changed -g/--clr1 and finish color -b/--clr2\n");
+    printf("chose your file -f/--file_name");
+    printf("example: ./CW2 -G --clr1 45 45 45 --clr2 88 88 88 -f myfile.bmp\n");
+    printf("\n");
+    printf("5)to see bmp file info chose -i/--info and write your file name\n");
+    printf("example: ./CW2 -i myfile.bmp\n");
 }
 int check_cord(int x1, int y1, int x2, int y2){
     int ans = (x1 <= x2) && (y1 >= y2);
