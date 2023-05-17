@@ -8,6 +8,7 @@ void put_img(char* file_name, BMP bmp);
 int not_num_check(char* s);
 void printhelp();
 int check_cord(int x1, int y1, int x2, int y2);
+void printinf(char* s);
 #endif
 
 #ifndef CW_2NDSEM_FUNC_H

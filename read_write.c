@@ -107,9 +107,23 @@ int not_num_check(char* s){ //check if it's a non-zero positive integer
 
 void printhelp(){
     //printf("Well, help yourself...\n");
-    printf("HUI\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
 }
 int check_cord(int x1, int y1, int x2, int y2){
     int ans = (x1 <= x2) && (y1 >= y2);
     return ans;
+}
+
+void printinf(char* s){
+    BMP bmp = get_img(s);
+    printf("version - %d\n", bmp.version);
+    printf("\n");
+    printf("Header info:\n%x - signature\n%u - filesize\n%hu - reserved1\n%hu - reserved2\n%u - pixel offset\n", bmp.head.Type, bmp.head.Size, bmp.head.Reserved1, bmp.head.Reserved2, bmp.head.OffBits);
+    printf("\n");
+    printf("Header file info:\n%u - height\n%u - width\n%u - header size\n%u - bits per pix\n%u - planes\n%x - compression\n", bmp.inf.Height, bmp.inf.Width, bmp.inf.Size, bmp.inf.BitCount, bmp.inf.Planes, bmp.inf.Compression);
+    printf("%hu - image size\n%u - XPelsPerMeter\n%u - YPelsPerMeter\n%u - ClrUsed\n%hu - ClrImportant\n", bmp.inf.SizeImage, bmp.inf.XPelsPerMeter, bmp.inf.YPelsPerMeter, bmp.inf.ClrUsed, bmp.inf.ClrImportant);
+    free_BMP(bmp);
 }

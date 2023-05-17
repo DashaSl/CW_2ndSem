@@ -18,7 +18,8 @@ int main(int argc, char *argv[]){
     int mode = -1; int fill_flag = -1;
     int some_index;
 
-    char* optstring = "hHCGFs:e:p:r:g:w:b:f:o:m:z:";
+    opterr = 0;
+    char* optstring = "hHCGFs:e:p:r:g:w:b:f:o:m:z:i:";
     struct option longg[] = {
             {"help",      no_argument, NULL, 'h'},
             {"hexagon",   no_argument, NULL, 'H'},
@@ -35,7 +36,8 @@ int main(int argc, char *argv[]){
             {"file_name", required_argument, NULL, 'f'},
             {"out_file", required_argument, NULL, 'o'},
             {"mode", required_argument, NULL, 'm'},
-            {"fill_flag", required_argument, NULL, 'z'}
+            {"fill_flag", required_argument, NULL, 'z'},
+            {"info", required_argument, NULL, 'i'}
     };
     int opt;
     while((opt = getopt_long(argc, argv, optstring, longg, &some_index)) != -1){
@@ -204,6 +206,12 @@ int main(int argc, char *argv[]){
                     }
                 }
                 break;
+            case 'i':
+                printinf(optarg);
+                return 0;
+            case '?':
+                printf("%c - is unknown.\n", optopt);
+                return 0;
 
         }
     }
