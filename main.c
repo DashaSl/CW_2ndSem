@@ -37,7 +37,8 @@ int main(int argc, char *argv[]){
             {"out_file", required_argument, NULL, 'o'},
             {"mode", required_argument, NULL, 'm'},
             {"fill_flag", required_argument, NULL, 'z'},
-            {"info", required_argument, NULL, 'i'}
+            {"info", required_argument, NULL, 'i'},
+            {0, 0, 0, 0}
     };
     int opt;
     while((opt = getopt_long(argc, argv, optstring, longg, &some_index)) != -1){
@@ -230,7 +231,7 @@ int main(int argc, char *argv[]){
                 printinf(optarg);
                 return 0;
             case '?':
-                printf("%c - is unknown.\n", optopt);
+                printf("unknown option found.\n");
                 return 0;
 
         }
@@ -245,6 +246,10 @@ int main(int argc, char *argv[]){
             break;
         case 'H':
             if(mode == 1){
+                if(radius == -1){
+                    printf("not enough arguments\n");
+                    exit(1);
+                }
                 data[2] = data[1];
                 data[1] = data[0];
                 data[0] = radius;

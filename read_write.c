@@ -129,7 +129,7 @@ void printhelp(){
     printf("If you selected mode 1 or 2 chose width (-w/--width) of the frame,\n");
     printf("color of lines of the frame (-g/--rgb1)\n");
     printf("chose to fill(1) or not to fill(0) frame\n");
-    printf("select a color, if you've chosen fill_flag 1 (-b/--clr2)\n");
+    printf("select a color, if you've chosen fill_flag 1 (-b/--rgb2)\n");
     printf("chose file -f/--file_name\n");
     printf("example: ./CW2 -F --width 50 -z 1 --rgb1 55 55 55 --rgb2 1 1 1 -f file.bmp\n");
     printf("\n");

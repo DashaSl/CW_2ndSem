@@ -243,7 +243,10 @@ void draw_Minkowski_frame(char* file_name, int width, int fill_flag, RGB line_co
 //simple start
 void draw_simple_frame(char* file_name, int width, RGB fill_color){
     BMP bmp = get_img(file_name);
-
+    if(check_bmp(bmp, width)){
+        printf("this frame will cover the whole picture! Dont do that\n");
+        exit(1);
+    }
     int wid = bmp.inf.Width;
     int hei = abs(bmp.inf.Height);
     draw_thick_line(bmp, fill_color,0, 0, 0, hei-1, width, 1);
